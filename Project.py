@@ -1,13 +1,36 @@
+#Libraries
 from re import A
 import ifcopenshell
 import pandas
+import os
+import gmsh
 
-ifc_file = ifcopenshell.open('modello base.ifc')
 
-#Getting all types of an IFC class, and listing what they are:
+#IfcFiles
+ifc_file = ifcopenshell.open('modellobase.ifc')
 
-products = ifc_file.by_type('IfcProduct')
-for product in products:
-    print(product.is_a())
+#Converting ifc to step
+cmd = '.\IfcConvert modellobase.ifc modellobase.stp'
+os.system(cmd)
 
-# use the converter 
+#UseIfctoStepfile
+gmsh.initialize()
+gmsh.model.add("modellobase.stp")
+
+
+gmsh.model.mesh.generate(3)
+
+gmsh.model.geo.synchronize()
+gmsh.fltk.run()
+gmsh.write("modellobase.msh")
+gmsh.finalize()
+
+
+
+
+
+
+
+
+
+
